@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="img2HiDT_transformer" name="img2HiDT_node" type="img2HiDT_node.py" output="screen"/>
+</launch>

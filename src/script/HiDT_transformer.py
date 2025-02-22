@@ -46,10 +46,10 @@ class HiDT_transformer():
     def HiDT(self, img):
 
         # PIL 形式に変換
-        image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        image = PILImage.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
         with torch.no_grad():
-            content_decomposition = self.style_transformer.get_content(img)[0]
+            content_decomposition = self.style_transformer.get_content(image)[0]
             decoder_input = {'content': content_decomposition['content'],
                             'intermediate_outputs': content_decomposition['intermediate_outputs'],
                             'style': self.style_to_transfer}
@@ -62,7 +62,10 @@ class HiDT_transformer():
         # Pillow は RGB 形式なので、OpenCV の BGR に変換 (必要に応じて)
         image_cv = cv2.cvtColor(image_cv, cv2.COLOR_RGB2BGR)
 
-        return image_cv
+        # frame_width と frame_height を指定してリサイズ
+        image_cv_resized = cv2.resize(image_cv, (480, 640))
+
+        return image_cv_resized
 
 
 if __name__ == '__main__':

@@ -7,6 +7,8 @@ import cv2
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from HiDT_transformer import *
+import time
+import copy
 
 class img2HiDT_node:
     def __init__(self):
@@ -35,7 +37,7 @@ class img2HiDT_node:
     def callback_camera(self, data):
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            self.HiDT_image = img2HiDT(self.cv_image)
+            #self.HiDT_image = self.img2HiDT(self.cv_image)
             #self.image_pub.publish(self.HiDT_image)
         except CvBridgeError as e:
             print(e)
@@ -43,7 +45,7 @@ class img2HiDT_node:
     def callback_left_camera(self, data):
         try:
             self.cv_left_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            self.HiDT_left_image = img2HiDT(self.cv_left_image)
+            #self.HiDT_left_image = self.img2HiDT(self.cv_left_image)
             #self.image_left_pub.publish(self.HiDT_left_image)
         except CvBridgeError as e:
             print(e)
@@ -51,7 +53,7 @@ class img2HiDT_node:
     def callback_right_camera(self, data):
         try:
             self.cv_right_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            self.HiDT_right_image = img2HiDT(self.cv_right_image)
+            #self.HiDT_right_image = self.img2HiDT(self.cv_right_image)
             #self.image_right_pub.publish(self.HiDT_right_image)
         except CvBridgeError as e:
             print(e)
@@ -59,7 +61,7 @@ class img2HiDT_node:
     def img2HiDT(self, image):
         #trans_image = np.zeros((480,640,3), np.uint8)
 
-        if self.image.size != 640 * 480 * 3:
+        if image.size != 640 * 480 * 3:
             return
 
         trans_image = self.H_trans.HiDT(image)
@@ -70,6 +72,25 @@ class img2HiDT_node:
         return trans_image
 
     def loop(self):
+
+        ### HiDT ###
+        self.HiDT_image = self.img2HiDT(self.cv_image)
+        self.HiDT_left_image = self.img2HiDT(self.cv_left_image)
+        self.HiDT_right_image = self.img2HiDT(self.cv_right_image)
+
+        ### show ###
+        #temp = copy.deepcopy(self.HiDT_image)
+        #cv2.imshow("HiDT Image", self.bridge.imgmsg_to_cv2(temp, "bgr8"))
+        #temp = copy.deepcopy(self.HiDT_left_image)
+        #cv2.imshow("HiDT Left Image", self.bridge.imgmsg_to_cv2(temp, "bgr8"))
+        #temp = copy.deepcopy(self.HiDT_right_image)
+        #cv2.imshow("HiDT Right Image", self.bridge.imgmsg_to_cv2(temp, "bgr8"))
+        #cv2.waitKey(1)
+
+        ### wait ###
+        time.sleep(0.05)
+
+        ### publish ###
         self.image_pub.publish(self.HiDT_image)
         self.image_left_pub.publish(self.HiDT_left_image)
         self.image_right_pub.publish(self.HiDT_right_image)
