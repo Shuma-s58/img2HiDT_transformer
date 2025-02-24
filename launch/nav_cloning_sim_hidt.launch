@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="script" default="nav_cloning_node.py"/>
-  <arg name="mode" default="use_dl_output"/>
+  <arg name="script" default="nav_cloning_node_pytorch_HiDT.py"/>
+  <arg name="mode" default="change_dataset_balance"/>
   <arg name="world_name" default="willow_garage.world"/>
   <arg name="map_file" default="willowgarage.yaml"/>
   <arg name="waypoints_file" default="willow_loop.yaml"/>
